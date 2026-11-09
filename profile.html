@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Profile - LearnHub</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script>(function(){try{document.documentElement.setAttribute("data-theme",localStorage.getItem("lh_theme")||"dark");}catch(e){document.documentElement.setAttribute("data-theme","dark");}})();</script>
+
+</head>
+
+<body>
+
+
+<header class="header">
+
+    <div class="container navbar">
+
+        <a href="index.html" class="logo">
+            Learn<span>Hub</span>
+        </a>
+
+        <nav class="nav-menu">
+
+            <a href="index.html" class="nav-link">
+                Home
+            </a>
+
+            <a href="courses.html" class="nav-link">
+                Courses
+            </a>
+
+            <a href="my-courses.html" class="nav-link">
+                My courses
+            </a>
+
+            <a href="profile.html" class="nav-link active">
+                Profile
+            </a>
+
+            <a href="dashboard.html" class="nav-link">
+                Dashboard
+            </a>
+
+            <a href="notes.html" class="nav-link">
+                My Notes
+            </a>
+
+            <a href="learning-paths.html" class="nav-link">
+                Learning Paths
+            </a>
+
+        </nav>
+
+        <div class="nav-actions"><button type="button" class="theme-toggle" title="Toggle dark / light theme" aria-label="Toggle dark or light theme"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+
+            <a href="cart.html" class="nav-icon">
+                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                <span id="cart-count" class="cart-count">
+                    0
+                </span>
+            </a>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<section class="page-header">
+
+    <div class="container">
+
+        <h1>
+            Your Profile
+        </h1>
+
+        <p>
+            Your account, progress and certificates.
+        </p>
+
+    </div>
+
+</section>
+
+
+<section class="section">
+
+    <div class="container">
+
+        <div class="admin-card" id="accountCard">
+            <p>Loading your profile…</p>
+        </div>
+
+        <h2 style="margin: 28px 0 12px;">My courses</h2>
+        <div id="myCourseList" class="course-grid"></div>
+
+        <h2 style="margin: 28px 0 12px;">My certificates</h2>
+        <div id="certList"><p>Loading…</p></div>
+
+        <h2 style="margin: 28px 0 12px;">Downloaded resources</h2>
+        <div id="resourceList"><p>Loading…</p></div>
+
+        <h2 style="margin: 28px 0 12px;">Purchase history</h2>
+        <div id="purchaseList"><p>Loading…</p></div>
+
+        <h2 style="margin: 28px 0 12px;">Settings</h2>
+        <div class="profile-card" id="settingsCard">
+            <p><label>Theme
+                <select id="themeSetting">
+                    <option value="dark">Dark</option>
+                    <option value="light">Light</option>
+                </select></label>
+                <button type="button" class="btn btn-outline btn-small" id="saveThemeBtn">Save theme</button>
+            </p>
+            <p><a href="notes.html" class="btn btn-primary btn-small"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> My notes</a>
+            <a href="dashboard.html" class="btn btn-outline btn-small">Dashboard</a></p>
+            <p class="admin-note">Theme is stored on this device (localStorage key <code>lh_theme</code>).</p>
+        </div>
+
+        <p style="margin-top: 28px;">
+            <button type="button" class="btn btn-outline" id="signOutBtn">Sign out</button>
+        </p>
+
+    </div>
+
+</section>
+
+
+<script src="script.js"></script>
+<script src="js/api.js"></script>
+
+<script>
+/* Real profile: account + stats from GET /api/me/dashboard, courses
+   from GET /api/my-courses with real progress, certificates from
+   GET /api/certificates. The old page rendered a localStorage list
+   with a hardcoded 25% progress bar and a button that only showed
+   an alert. */
+(function () {
+    "use strict";
+
+    function esc(s) {
+        return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+            return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+        });
+    }
+
+    document.getElementById("signOutBtn").addEventListener("click", function () { logout(); });
+
+    document.addEventListener("DOMContentLoaded", async function () {
+        var account = document.getElementById("accountCard");
+        var list = document.getElementById("myCourseList");
+        var certs = document.getElementById("certList");
+        if (!localStorage.getItem("lh_token")) {
+            account.innerHTML = '<p>You are not signed in. <a href="login.html" class="btn btn-primary">Sign in</a></p>';
+            list.innerHTML = "";
+            certs.innerHTML = "";
+            return;
+        }
+        try {
+            var d = await LearnHubAPI.getDashboard();
+            var u = d.user || {};
+            account.innerHTML = "<h3>" + esc(u.name || "") + "</h3>" +
+                "<p>" + esc(u.email || "") + "</p>" +
+                "<p>Level " + (d.level || 1) + " · " + (d.xp || 0) + " XP · " +
+                (d.streak_days || 0) + "-day streak · " + (d.lessons_completed || 0) +
+                " lessons done · " + (d.certificates_count || 0) + " certificate(s)</p>" +
+                (u.is_admin ? '<p><span class="meta">Admin</span> <a href="admin.html">Open admin dashboard</a></p>' : "");
+        } catch (e) {
+            account.innerHTML = "<p>Could not load your profile: " + esc(e.message || "") + "</p>";
+        }
+        // Resources + purchase history come from the same dashboard payload.
+        try {
+            var dash = await LearnHubAPI.getDashboard();
+            var res = dash.resources || [];
+            document.getElementById("resourceList").innerHTML = res.length ? "<ul>" + res.map(function (r) {
+                return '<li><a href="course-details.html?id=' + r.course_id + '">' + esc(r.course_title) + "</a> — " + (r.lesson_count || 0) + " lessons</li>";
+            }).join("") + "</ul>" : "<p>No resources yet — enrol in a course to access its materials.</p>";
+            var ph = dash.purchase_history || [];
+            document.getElementById("purchaseList").innerHTML = ph.length ? "<ul>" + ph.map(function (p) {
+                return "<li>Order <strong>" + esc(p.order_id || ("#" + p.id)) + "</strong> — " + esc(p.course_title || ("Course " + (p.course_id || ""))) +
+                    " — " + esc(formatPrice(p.amount)) + " " + esc(p.currency || "INR") + " — <strong>" + esc(p.status) + "</strong> <small>(" + esc(String(p.created_at || "").slice(0, 10)) + ")</small></li>";
+            }).join("") + "</ul>" : "<p>No purchases yet.</p>";
+        } catch (e) {
+            document.getElementById("resourceList").innerHTML = "<p>Could not load resources.</p>";
+            document.getElementById("purchaseList").innerHTML = "<p>Could not load purchase history.</p>";
+        }
+        // Settings: theme picker (same lh_theme key as the nav toggle).
+        try {
+            var themeSel = document.getElementById("themeSetting");
+            themeSel.value = localStorage.getItem("lh_theme") || "dark";
+            document.getElementById("saveThemeBtn").addEventListener("click", function () {
+                localStorage.setItem("lh_theme", themeSel.value);
+                document.documentElement.setAttribute("data-theme", themeSel.value);
+                if (window.lhWireThemeToggles) window.lhWireThemeToggles();
+            });
+        } catch (e) { /* settings are best-effort */ }
+        try {
+            var courses = await LearnHubAPI.getMyCourses();
+            if (!courses.length) {
+                list.innerHTML = '<div class="empty-state"><h2>No courses yet</h2>' +
+                    "<p>Enrol in a course to start learning.</p><br>" +
+                    '<a href="courses.html" class="btn btn-primary">Explore Courses</a></div>';
+            } else {
+                list.innerHTML = courses.map(function (c) {
+                    var pct = c.progress_percent || 0;
+                    return '<div class="course-card"><div class="course-content">' +
+                        "<h3>" + esc(c.title) + "</h3>" +
+                        '<p class="instructor">' + esc(c.instructor || "") + "</p>" +
+                        "<p>" + pct + "% complete · " + (c.lesson_count || 0) + " lessons</p>" +
+                        '<progress value="' + pct + '" max="100" style="width:100%;"></progress><br><br>' +
+                        '<a class="btn btn-primary" href="course-details.html?id=' + c.id + '">Continue learning</a>' +
+                        "</div></div>";
+                }).join("");
+            }
+        } catch (e) {
+            list.innerHTML = "<p>Could not load your courses: " + esc(e.message || "") + "</p>";
+        }
+        try {
+            var mine = await LearnHubAPI.getMyCertificates();
+            certs.innerHTML = mine.length ? "<ul>" + mine.map(function (c) {
+                return '<li><a href="certificate.html?id=' + c.id + '">' +
+                    esc(c.course_title) + "</a> — " + esc(c.certificate_code) +
+                    " <small>(" + esc(String(c.issued_at || "").slice(0, 10)) + ")</small></li>";
+            }).join("") + "</ul>" : "<p>No certificates yet — finish a course to earn one.</p>";
+        } catch (e) {
+            certs.innerHTML = "<p>Could not load certificates.</p>";
+        }
+    });
+})();
+</script>
+
+</body>
+</html>

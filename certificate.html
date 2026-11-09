@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta name="description" content="LearnHub certificate of completion — verify this certificate and share it with employers.">
+    <meta property="og:title" content="Certificate of Completion - LearnHub">
+    <meta property="og:description" content="A LearnHub certificate of completion, verifiable by its unique code.">
+    <meta property="og:type" content="website">
+
+    <title>Certificate of Completion - LearnHub</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+    <style>
+        .cert-wrap { max-width: 860px; margin: 3rem auto; padding: 0 1rem; }
+        .cert-card {
+            border: 4px double #2a7ae2; border-radius: 12px;
+            padding: 3rem 2rem; text-align: center; background: #fff;
+        }
+        .cert-card h1 { color: #2a7ae2; letter-spacing: 2px; margin-bottom: .25rem; }
+        .cert-card .sub { color: #666; margin: .25rem 0; }
+        .cert-card .name { font-size: 2rem; font-weight: bold; margin: 1rem 0; }
+        .cert-card .course { font-size: 1.4rem; font-weight: bold; margin: .5rem 0; }
+        .cert-card .code {
+            display: inline-block; margin-top: 1.5rem; padding: .4rem 1rem;
+            background: #f2f6fc; border: 1px dashed #2a7ae2; border-radius: 6px;
+            font-family: monospace; letter-spacing: 1px;
+        }
+        .cert-actions { text-align: center; margin-top: 1.5rem; }
+        @media print {
+            .header, .footer, .cert-actions, .cert-share button { display: none; }
+            .cert-wrap { margin: 0; max-width: none; }
+            .cert-share input { border: none; text-align: center; }
+        }
+    </style>
+
+</head>
+
+<body>
+
+<header class="header">
+
+    <div class="container navbar">
+
+        <a href="index.html" class="logo">
+            Learn<span>Hub</span>
+        </a>
+
+        <nav class="nav-menu">
+
+            <a href="index.html" class="nav-link">
+                Home
+            </a>
+
+            <a href="courses.html" class="nav-link">
+                Courses
+            </a>
+
+            <a href="my-courses.html" class="nav-link">
+                My courses
+            </a>
+
+        </nav>
+
+    </div>
+
+</header>
+
+<main>
+
+    <div class="cert-wrap">
+
+        <div
+            id="cert-card"
+            class="cert-card"
+        >
+            <p class="sub">Loading certificate...</p>
+        </div>
+
+        <div class="cert-actions">
+            <button
+                class="btn"
+                onclick="window.print()"
+            >
+                Print Certificate
+            </button>
+            <a
+                class="btn btn-outline"
+                href="my-courses.html"
+            >
+                Back to My courses
+            </a>
+        </div>
+
+    </div>
+
+</main>
+
+<footer class="footer">
+
+    <div class="container">
+
+        <p>&copy; LearnHub LMS.</p>
+
+    </div>
+
+</footer>
+
+<script src="script.js"></script>
+<script src="js/api.js"></script>
+
+<script>
+    (async function () {
+        const card = document.getElementById("cert-card");
+        const params = new URLSearchParams(location.search);
+        const id = params.get("id");
+        const code = params.get("code");
+        // Public verification links (e.g. from notifications) use
+        // ?code=LH-XXXX and need no sign-in; ?id= is the owner's
+        // private view. The old page only understood ?id=, so every
+        // notification link landed on "No certificate id given."
+        if (code) {
+            try {
+                const v = await LearnHubAPI.verifyCertificate(code);
+                if (!v.valid) {
+                    card.innerHTML = '<p class="sub">This certificate code is not valid.</p>';
+                    return;
+                }
+                renderCert({
+                    user_name: v.student_name, course_title: v.course_title,
+                    instructor: v.instructor, issued_at: v.issued_at,
+                    certificate_code: v.certificate_code, duration_hours: null,
+                    course_id: null,
+                }, location.origin + location.pathname + "?code=" + encodeURIComponent(code));
+            } catch (e) {
+                card.innerHTML = '<p class="sub">Could not verify this certificate: ' +
+                    escapeHtml(e.message || "not found") + '</p>';
+            }
+            return;
+        }
+        if (!id) {
+            card.innerHTML = '<p class="sub">No certificate given. Open this page as certificate.html?id=&lt;certificate_id&gt; or certificate.html?code=LH-XXXX.</p>';
+            return;
+        }
+        if (!localStorage.getItem("lh_token")) {
+            card.innerHTML = '<p class="sub">Please <a href="login.html">sign in</a> to view your certificate.</p>';
+            return;
+        }
+        try {
+            const cert = await LearnHubAPI.getCertificate(id);
+            renderCert(cert, location.origin + location.pathname + "?id=" + id);
+        } catch (e) {
+            card.innerHTML = '<p class="sub">Could not load this certificate: ' +
+                escapeHtml(e.message || "not found") + '</p>';
+        }
+        return;
+
+        async function renderCert(cert, shareUrl) {
+            card.innerHTML = `
+                <h1>Certificate of completion</h1>
+                <p class="sub">This certificate is presented to</p>
+                <p class="name">${escapeHtml(cert.user_name)}</p>
+                <p class="sub">for successfully completing</p>
+                <p class="course">${escapeHtml(cert.course_title)}</p>
+                <p class="sub">Instructor: ${escapeHtml(cert.instructor || "LearnHub")}
+                    &nbsp;|&nbsp; ${escapeHtml(String(cert.duration_hours || ""))} hours</p>
+                <p class="sub">Issued on ${escapeHtml(String(cert.issued_at || "").slice(0, 10))}</p>
+                <div class="code">${escapeHtml(cert.certificate_code)}</div>
+                <p class="sub" id="examStatus"></p>
+                <div class="cert-share">
+                    <input type="text" id="shareLink" readonly value="${escapeHtml(shareUrl)}" aria-label="Shareable certificate link">
+                    <button class="btn btn-outline" type="button" id="copyLinkBtn">Copy link</button>
+                </div>
+                <p class="sub"><small>Anyone with this link can verify the certificate — the code is checked against the live registry.</small></p>
+            `;
+            const copyBtn = document.getElementById("copyLinkBtn");
+            copyBtn.addEventListener("click", async () => {
+                const input = document.getElementById("shareLink");
+                input.select();
+                try {
+                    await navigator.clipboard.writeText(input.value);
+                    copyBtn.textContent = "Copied";
+                } catch (e) {
+                    document.execCommand("copy");
+                    copyBtn.textContent = "Copied";
+                }
+                setTimeout(() => { copyBtn.textContent = "Copy link"; }, 2000);
+            });
+            // Final-exam status for this course (signed in + enrolled only;
+            // hidden when the endpoint is unavailable).
+            if (cert.course_id && window.LearnHubUI) {
+                try {
+                    const exam = await LearnHubUI.lhApi(`/api/courses/${cert.course_id}/final-exam`);
+                    const line = document.getElementById("examStatus");
+                    if (line) {
+                        // best_score is the raw best mark (questions
+                        // correct), not a percent.
+                        const total = (exam.questions || []).length || 10;
+                        line.textContent = exam.passed
+                            ? `Final exam: passed (best score ${exam.best_score} / ${total})`
+                            : (exam.best_score != null
+                                ? `Final exam: not passed yet (best score ${exam.best_score} / ${total})`
+                                : "Final exam: not attempted yet");
+                    }
+                } catch (e) { /* hide the line when unavailable */ }
+            }
+        }
+
+        function escapeHtml(s) {
+            return String(s).replace(/[&<>"']/g, (c) => ({
+                "&": "&amp;", "<": "&lt;", ">": "&gt;",
+                '"': "&quot;", "'": "&#39;",
+            })[c]);
+        }
+    })();
+</script>
+
+</body>
+
+</html>

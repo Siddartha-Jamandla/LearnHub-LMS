@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Checkout - LearnHub</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script>(function(){try{document.documentElement.setAttribute("data-theme",localStorage.getItem("lh_theme")||"dark");}catch(e){document.documentElement.setAttribute("data-theme","dark");}})();</script>
+
+</head>
+
+<body>
+
+
+<header class="header">
+
+    <div class="container navbar">
+
+        <a href="index.html" class="logo">
+            Learn<span>Hub</span>
+        </a>
+
+        <nav class="nav-menu">
+
+            <a href="index.html" class="nav-link">
+                Home
+            </a>
+
+            <a href="courses.html" class="nav-link">
+                Courses
+            </a>
+
+        </nav>
+
+        <div class="nav-actions"><button type="button" class="theme-toggle" title="Toggle dark / light theme" aria-label="Toggle dark or light theme"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+
+            <a href="cart.html" class="nav-icon">
+                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                <span id="cart-count" class="cart-count">
+                    0
+                </span>
+            </a>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<section class="form-page">
+
+    <div class="form-card">
+
+        <h1>
+            Checkout
+        </h1>
+
+        <p>
+            Review your order and confirm — enrolment is instant and no
+            payment is collected here.
+        </p>
+
+        <div id="checkoutStatus" hidden></div>
+
+        <div id="orderSummary">
+            <p>Loading your order…</p>
+        </div>
+
+
+        <form id="checkoutForm">
+
+            <div class="form-group">
+
+                <label>
+                    Full name
+                </label>
+
+                <input
+                    type="text"
+                    required
+                    placeholder="Enter your name"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Email
+                </label>
+
+                <input
+                    type="email"
+                    required
+                    placeholder="Enter your email"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Phone number
+                </label>
+
+                <input
+                    type="tel"
+                    required
+                    placeholder="Enter phone number"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Country
+                </label>
+
+                <select required>
+
+                    <option value="">
+                        Select country
+                    </option>
+
+                    <option>
+                        India
+                    </option>
+
+                    <option>
+                        United States
+                    </option>
+
+                    <option>
+                        United Kingdom
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="btn btn-primary form-submit"
+            >
+                Complete enrolment
+            </button>
+
+        </form>
+
+    </div>
+
+</section>
+
+
+<script src="script.js"></script>
+<script src="js/api.js"></script>
+<script>
+/* Order summary from the server cart, and pre-fill the form from
+   the signed-in account. The submit itself is handled by script.js,
+   which calls POST /api/checkout and enrols every cart course. */
+(function () {
+    "use strict";
+    function esc(s) {
+        return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+            return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+        });
+    }
+    document.addEventListener("DOMContentLoaded", async function () {
+        var box = document.getElementById("orderSummary");
+        try {
+            var u = JSON.parse(localStorage.getItem("lh_user") || "null");
+            if (u) {
+                var nameInput = document.querySelector('#checkoutForm input[type="text"]');
+                var emailInput = document.querySelector('#checkoutForm input[type="email"]');
+                if (nameInput && u.name) nameInput.value = u.name;
+                if (emailInput && u.email) emailInput.value = u.email;
+            }
+        } catch (e) { /* leave the form blank */ }
+        if (!localStorage.getItem("lh_token")) {
+            box.innerHTML = '<p>Please <a href="login.html">sign in</a> to check out.</p>';
+            return;
+        }
+        try {
+            var items = await LearnHubAPI.getCart();
+            if (!items.length) {
+                box.innerHTML = '<p>Your cart is empty. <a href="courses.html">Browse courses</a>.</p>';
+                return;
+            }
+            var total = 0;
+            var rows = items.map(function (it) {
+                var c = it.course || {};
+                total += Number(c.price) || 0;
+                return "<li>" + esc(c.title) + " — " + esc(formatPrice(c.price)) + "</li>";
+            }).join("");
+            box.innerHTML = "<ul>" + rows + "</ul><p><strong>Total: " +
+                esc(formatPrice(total)) + "</strong></p>";
+        } catch (e) {
+            box.innerHTML = "<p>Could not load your order: " + esc(e.message || "") + "</p>";
+        }
+    });
+})();
+</script>
+
+</body>
+</html>

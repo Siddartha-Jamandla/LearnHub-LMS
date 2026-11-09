@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="LearnHub — paid coding courses in C, data structures, Python, Java and web development, with lessons, quizzes, proctored exams and certificates.">
+    <meta property="og:title" content="LearnHub — coding courses for B.Tech students">
+    <meta property="og:description" content="Paid courses in C, data structures, Python, Java and web development, with quizzes, proctored exams and certificates.">
+    <meta property="og:type" content="website">
+
+    <title>LearnHub — coding courses for B.Tech students</title>
+
+    <!-- Common CSS -->
+    <link rel="stylesheet" href="style.css">
+    <script>(function(){try{document.documentElement.setAttribute("data-theme",localStorage.getItem("lh_theme")||"dark");}catch(e){document.documentElement.setAttribute("data-theme","dark");}})();</script>
+</head>
+
+<body>
+
+    <!-- =========================
+         HEADER / NAVBAR
+    ========================== -->
+    <header class="header">
+
+        <div class="container navbar">
+
+            <!-- Logo -->
+            <a href="index.html" class="logo">
+                LearnHub
+            </a>
+
+            <!-- Navigation -->
+            <nav class="nav-menu">
+
+                <a href="index.html" class="nav-link active">
+                    Home
+                </a>
+
+                <a href="courses.html" class="nav-link">
+                    Courses
+                </a>
+
+                <a href="about.html" class="nav-link">
+                    About
+                </a>
+
+                <a href="contact.html" class="nav-link">
+                    Contact
+                </a>
+
+                            <a href="dashboard.html" class="nav-link">
+                    Dashboard
+                </a>
+
+                <a href="learning-paths.html" class="nav-link">
+                    Learning Paths
+                </a>
+
+</nav>
+
+            <!-- Right Side -->
+            <div class="nav-actions"><button type="button" class="theme-toggle" title="Switch theme" aria-label="Switch theme">Light</button>
+
+                <a href="dashboard.html#notifications" class="nav-icon notif-bell" id="notifBell" title="Notifications" hidden>
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+                    <span id="notifCount" class="notif-count" hidden>0</span>
+                </a>
+
+                <a href="wishlist.html" class="nav-icon" title="Wishlist">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+                </a>
+
+                <a href="cart.html" class="nav-icon" title="Cart">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.1 3h2l2.6 12.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L21.5 7H6"/></svg>
+                    <span id="cart-count" class="cart-count">0</span>
+                </a>
+
+                <a href="login.html" class="nav-link">
+                    Log in
+                </a>
+
+                <a href="register.html" class="btn btn-primary">
+                    Register
+                </a>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================
+         HERO SECTION
+    ========================== -->
+    <main>
+
+        <section class="hero">
+
+            <div class="container hero-content">
+
+                <!-- Hero Text -->
+                <div class="hero-text">
+
+                    <span class="meta">
+                        16 courses · C, DSA, Python, Java, Web Development
+                    </span>
+
+                    <h1>
+                        Learn to code, one lesson at a time.
+                    </h1>
+
+                    <p>
+                        Paid courses in C, data structures, Python, Java
+                        and web development, with quizzes, proctored exams
+                        and certificates. Built for B.Tech students in India.
+                    </p>
+                    <p class="meta">LearnHub · CareerPlus Co-Private Limited</p>
+
+                    <div class="hero-buttons">
+
+                        <a href="courses.html" class="btn btn-primary btn-large">
+                            Browse courses
+                        </a>
+
+                        <a href="learning-paths.html" class="btn btn-outline btn-large">
+                            See learning paths
+                        </a>
+
+                    </div>
+
+                    <form class="hero-search" action="search.html" method="get">
+                        <input type="search" name="q" placeholder="Search courses" aria-label="Search courses">
+                        <button class="btn btn-primary" type="submit">Search</button>
+                    </form>
+
+                    </div>
+
+                    <!-- Hero Stats -->
+                    <div class="hero-stats">
+
+                        <div class="stat" id="statCoursesWrap">
+                            <h3 id="statCourses">—</h3>
+                            <p>Courses</p>
+                        </div>
+
+                        <div class="stat" id="statLearnersWrap">
+                            <h3 id="statLearners">—</h3>
+                            <p>Learners</p>
+                        </div>
+
+                        <div class="stat" id="statEnrollmentsWrap">
+                            <h3 id="statEnrollments">—</h3>
+                            <p>Enrolments</p>
+                        </div>
+
+                        <div class="stat" id="statCertsWrap">
+                            <h3 id="statCerts">—</h3>
+                            <p>Certificates issued</p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Hero visual: a real lesson, built in code -->
+                <div class="hero-image">
+
+                    <div class="code-window">
+                        <div class="code-window-head">
+                            <span class="dots"><i></i><i></i><i></i></span>
+                            <span>reverse.c</span>
+                            <span style="margin-left:auto">C · Lesson 1</span>
+                        </div>
+                        <pre><code><span class="cl"><span class="tok-k">void</span> <span class="tok-f">reverse</span>(<span class="tok-k">int</span> a[], <span class="tok-k">int</span> n) {</span><span class="cl">    <span class="tok-k">int</span> i = 0, j = n - 1;</span><span class="cl">    <span class="tok-k">while</span> (i &lt; j) {</span><span class="cl">        <span class="tok-k">int</span> temp = a[i];</span><span class="cl">        a[i] = a[j];</span><span class="cl">        a[j] = temp;</span><span class="cl">        i++; j--;</span><span class="cl">    }</span><span class="cl">}</span></code></pre>
+                    </div>
+
+                    <p class="margin-note" style="margin-top: 16px">
+                        <strong>From the C course.</strong> Write it, run it, then
+                        take the proctored exam — try it on [1, 2, 3, 4, 5].
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             FLAGSHIP TRACKS
+        ========================== -->
+        <section class="section" id="flagshipSection">
+            <div class="container">
+                <div class="section-header">
+                    <span class="meta">Five tracks</span>
+                    <h2>Flagship tracks</h2>
+                    <p>C, data structures, Python, Java and web development. Each one has lessons, quizzes and a proctored exam.</p>
+                </div>
+                <div class="flagship-grid" id="flagshipGrid"><p>Loading flagship tracks…</p></div>
+            </div>
+        </section>
+
+
+        <!-- =========================
+             CATEGORIES SECTION
+        ========================== -->
+        <section class="categories section">
+
+            <div class="container">
+
+                <div class="section-header">
+
+                    <span class="meta">
+                        Categories
+                    </span>
+
+                    <h2>
+                        Categories
+                    </h2>
+
+                    <p>
+                        Browse by subject and pick a course.
+                    </p>
+
+                </div>
+
+
+                <div class="category-grid" id="categoryChips">
+
+                    <p>Loading categories…</p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             POPULAR COURSES
+        ========================== -->
+        <section class="courses-section section">
+
+            <div class="container">
+
+                <div class="section-header section-header-row">
+
+                    <div>
+
+                        <span class="meta">
+                            Top rated
+                        </span>
+
+                        <h2 id="topRatedTitle">
+                            Top rated courses
+                        </h2>
+
+                        <p id="topRatedSub">
+                            The highest rated courses, from learner reviews.
+                        </p>
+
+                    </div>
+
+                    <a href="courses.html" class="view-all">
+                        View all courses →
+                    </a>
+
+                </div>
+
+
+                <div class="course-grid" id="topRatedGrid">
+
+                    <p>Loading top-rated courses…</p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             NEW COURSES
+        ========================== -->
+        <section class="courses-section section">
+
+            <div class="container">
+
+                <div class="section-header section-header-row">
+
+                    <div>
+
+                        <span class="meta">
+                            New
+                        </span>
+
+                        <h2>
+                            New courses
+                        </h2>
+
+                        <p>
+                            The latest courses added.
+                        </p>
+
+                    </div>
+
+                    <a href="search.html?sort=newest" class="view-all">
+                        View all courses →
+                    </a>
+
+                </div>
+
+
+                <div class="course-grid" id="newCoursesGrid">
+
+                    <p>Loading new courses…</p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             RECOMMENDED FOR YOU
+        ========================== -->
+        <section class="courses-section section" id="recommendedSection" hidden>
+
+            <div class="container">
+
+                <div class="section-header section-header-row">
+
+                    <div>
+
+                        <span class="meta">
+                            For you
+                        </span>
+
+                        <h2>
+                            Recommended for you
+                        </h2>
+
+                        <p>
+                            Picked from the categories you are learning.
+                        </p>
+
+                    </div>
+
+                    <a href="my-courses.html" class="view-all">
+                        My courses →
+                    </a>
+
+                </div>
+
+
+                <div class="course-grid" id="recommendedGrid"></div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             WHY CHOOSE US
+        ========================== -->
+        <section class="why-us section">
+
+            <div class="container">
+
+                <div class="section-header">
+
+                    <span class="meta">
+                        What you get
+                    </span>
+
+                    <h2>
+                        What each course includes
+                    </h2>
+
+                    <p>
+                        Lessons, quizzes, tasks and a certificate — the same
+                        structure in every course.
+                    </p>
+
+                </div>
+
+
+                <div class="features-grid">
+
+                    <!-- Feature 1 -->
+                    <div class="feature-card">
+
+                        <div class="feature-icon">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:24px;height:24px"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                        </div>
+
+                        <h3>
+                            Lessons with code
+                        </h3>
+
+                        <p>
+                            Every lesson has code you can read and run,
+                            with a task to try.
+                        </p>
+
+                    </div>
+
+
+                    <!-- Feature 2 -->
+                    <div class="feature-card">
+
+                        <div class="feature-icon">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:24px;height:24px"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                        </div>
+
+                        <h3>
+                            Quizzes and tasks
+                        </h3>
+
+                        <p>
+                            Short quizzes and practice tasks after
+                            each lesson.
+                        </p>
+
+                    </div>
+
+
+                    <!-- Feature 3 -->
+                    <div class="feature-card">
+
+                        <div class="feature-icon">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:24px;height:24px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+                        </div>
+
+                        <h3>
+                            Proctored exams
+                        </h3>
+
+                        <p>
+                            A timed exam with copy-paste and
+                            tab switching blocked.
+                        </p>
+
+                    </div>
+
+
+                    <!-- Feature 4 -->
+                    <div class="feature-card">
+
+                        <div class="feature-icon">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:24px;height:24px"><circle cx="12" cy="8" r="6"/><path d="M15.5 13 17 22l-5-3-5 3 1.5-9"/></svg>
+                        </div>
+
+                        <h3>
+                            Certificates
+                        </h3>
+
+                        <p>
+                            A verifiable certificate when you
+                            finish the course.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             CTA SECTION
+        ========================== -->
+        <section class="cta-section">
+
+            <div class="container">
+
+                <div class="cta-content">
+
+                    <div>
+
+                        <span class="meta">
+                            Start
+                        </span>
+
+                        <h2>
+                            Start with one course
+                        </h2>
+
+                        <p>
+                            Pick a track, finish the first lesson,
+                            and see how it fits.
+                        </p>
+
+                    </div>
+
+
+                    <div class="cta-buttons">
+
+                        <a
+                            href="courses.html"
+                            class="btn btn-primary btn-large"
+                        >
+                            Browse courses
+                        </a>
+
+                        <a
+                            href="register.html"
+                            class="btn btn-light btn-large"
+                        >
+                            Create an account
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+    <footer class="footer">
+
+        <div class="container footer-grid">
+
+            <!-- About -->
+            <div class="footer-column">
+
+                <a href="index.html" class="footer-logo">
+                    LearnHub
+                </a>
+
+                <p>
+                    Coding courses for B.Tech students, by CareerPlus
+                    Co-Private Limited.
+                </p>
+
+                <div class="social-links">
+
+                    <a href="https://www.linkedin.com/in/siddartha-jamandla-97350b384" title="LinkedIn" target="_blank" rel="noopener">in</a>
+
+                    <a href="https://github.com/Siddartha-Jamandla" title="GitHub" target="_blank" rel="noopener">GH</a>
+
+                    <a href="https://www.instagram.com/siddu_edits_hub/" title="Instagram" target="_blank" rel="noopener">IG</a>
+
+                </div>
+
+            </div>
+
+
+            <!-- Quick Links -->
+            <div class="footer-column">
+
+                <h3>
+                    Quick links
+                </h3>
+
+                <a href="index.html">
+                    Home
+                </a>
+
+                <a href="courses.html">
+                    Courses
+                </a>
+
+                <a href="search.html">
+                    Search
+                </a>
+
+                <a href="about.html">
+                    About Us
+                </a>
+
+                <a href="contact.html">
+                    Contact Us
+                </a>
+
+                <a href="dashboard.html">
+                    Dashboard
+                </a>
+
+                <a href="learning-paths.html">
+                    Learning Paths
+                </a>
+
+                <a href="instructors.html">
+                    Instructors
+                </a>
+
+                <a href="announcements.html">
+                    Announcements
+                </a>
+
+            </div>
+
+
+            <!-- Student -->
+            <div class="footer-column">
+
+                <h3>
+                    Student
+                </h3>
+
+                <a href="login.html">
+                    Login
+                </a>
+
+                <a href="register.html">
+                    Register
+                </a>
+
+                <a href="my-courses.html">
+                    My Courses
+                </a>
+
+                <a href="wishlist.html">
+                    Wishlist
+                </a>
+
+            </div>
+
+
+            <!-- Support -->
+            <div class="footer-column">
+
+                <h3>
+                    Support
+                </h3>
+
+                <a href="faq.html">
+                    FAQ
+                </a>
+
+                <a href="help.html">
+                    Help Center
+                </a>
+
+                <a href="privacy-policy.html">
+                    Privacy Policy
+                </a>
+
+                <a href="terms.html">
+                    Terms & Conditions
+                </a>
+
+                <a href="admin.html">
+                    Admin
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- Copyright -->
+        <div class="footer-bottom">
+
+            <div class="container">
+
+                <p>
+                    © 2026 LearnHub by CareerPlus Co-Private Limited. All Rights Reserved.
+                </p>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+
+    <!-- Common JavaScript -->
+    <script src="script.js"></script>
+    <script src="js/api.js"></script>
+<script>
+/* Homepage: real stats, categories, top-rated, new & recommended. */
+(function () {
+    "use strict";
+    var UI = window.LearnHubUI;
+
+    async function loadStats() {
+        try {
+            var d = await UI.lhApi("/api/stats");
+            document.getElementById("statCourses").textContent = d.total_courses;
+            document.getElementById("statLearners").textContent = d.total_learners;
+            document.getElementById("statEnrollments").textContent = d.total_enrollments;
+            document.getElementById("statCerts").textContent = d.certificates_issued;
+        } catch (e) {
+            // Stats endpoint not live yet: show the real course count
+            // and hide the stats we cannot verify.
+            try {
+                var list = await UI.lhApi("/api/courses?per_page=1");
+                document.getElementById("statCourses").textContent = list.total;
+            } catch (e2) { document.getElementById("statCourses").textContent = "—"; }
+            ["statLearnersWrap", "statEnrollmentsWrap", "statCertsWrap"].forEach(function (id) {
+                var el = document.getElementById(id); if (el) el.style.display = "none";
+            });
+        }
+    }
+
+    async function enrichRatings(list) {
+        // GET /api/courses list rows carry no avg_rating yet: fetch the
+        // single-course endpoint (which has avg_rating + review_count)
+        // for any course missing them. Tolerates failures.
+        await Promise.all(list.map(async function (c) {
+            if (c.avg_rating != null) return;
+            try {
+                var d = await UI.lhApi("/api/courses/" + c.id);
+                c.avg_rating = d.course.avg_rating;
+                c.review_count = d.course.review_count;
+            } catch (e) { /* leave unrated */ }
+        }));
+        return list;
+    }
+
+    async function loadTopRated() {
+        var grid = document.getElementById("topRatedGrid");
+        try {
+            var rows = await UI.searchCourses({ sort: "rating" });
+            rows = await enrichRatings(rows.slice(0, 8));
+            var rated = rows.filter(function (c) { return UI.ratingOf(c) > 0; });
+            if (!rated.length) {
+                // No ratings yet: fall back to the newest courses.
+                rows = await enrichRatings((await UI.searchCourses({ sort: "newest" })).slice(0, 8));
+                document.getElementById("topRatedTitle").textContent = "Popular Courses";
+                document.getElementById("topRatedSub").textContent = "No reviews yet — here are the newest courses while learners catch up.";
+            }
+            grid.innerHTML = rows.map(function (c) { return UI.courseCard(c); }).join("");
+        } catch (e) {
+            grid.innerHTML = '<div class="empty-state"><h2>Top-rated courses are unavailable right now</h2><p>Please try again later.</p></div>';
+        }
+    }
+
+    async function loadCategories() {
+        var wrap = document.getElementById("categoryChips");
+        try {
+            var d = await UI.lhApi("/api/courses?per_page=50");
+            var counts = {};
+            (d.courses || []).forEach(function (c) { counts[c.category] = (counts[c.category] || 0) + 1; });
+            var cats = Object.keys(counts).sort();
+            if (!cats.length) { wrap.innerHTML = "<p>No categories yet.</p>"; return; }
+            wrap.innerHTML = cats.map(function (cat) {
+                return '<a href="search.html?category=' + encodeURIComponent(cat) + '" class="category-chip">' +
+                    UI.esc(cat) + " (" + counts[cat] + ")</a>";
+            }).join("");
+        } catch (e) {
+            wrap.innerHTML = "<p>Categories are unavailable right now.</p>";
+        }
+    }
+
+    async function loadNew() {
+        var grid = document.getElementById("newCoursesGrid");
+        try {
+            var rows = await enrichRatings((await UI.searchCourses({ sort: "newest" })).slice(0, 4));
+            grid.innerHTML = rows.length
+                ? rows.map(function (c) { return UI.courseCard(c); }).join("")
+                : "<p>No courses yet.</p>";
+        } catch (e) {
+            grid.innerHTML = "<p>New courses are unavailable right now.</p>";
+        }
+    }
+
+    async function loadRecommended() {
+        var section = document.getElementById("recommendedSection");
+        if (!UI.isSignedIn()) return; // hidden when signed out
+        try {
+            var d = await UI.lhApi("/api/me/recommended");
+            var rows = d.courses || [];
+            if (!rows.length) return; // hide when empty
+            section.hidden = false;
+            document.getElementById("recommendedGrid").innerHTML =
+                rows.slice(0, 4).map(function (c) { return UI.courseCard(c); }).join("");
+        } catch (e) { /* endpoint not live yet: keep hidden */ }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        loadStats(); loadCategories(); loadTopRated(); loadNew(); loadRecommended(); if (typeof renderFlagshipTracks === "function") renderFlagshipTracks("flagshipGrid");
+    });
+})();
+</script>
+
+</body>
+</html>

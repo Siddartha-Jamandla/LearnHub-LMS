@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>My courses - LearnHub</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script>(function(){try{document.documentElement.setAttribute("data-theme",localStorage.getItem("lh_theme")||"dark");}catch(e){document.documentElement.setAttribute("data-theme","dark");}})();</script>
+
+</head>
+
+<body>
+
+
+<header class="header">
+
+    <div class="container navbar">
+
+        <a href="index.html" class="logo">
+            Learn<span>Hub</span>
+        </a>
+
+        <nav class="nav-menu">
+
+            <a href="index.html" class="nav-link">
+                Home
+            </a>
+
+            <a href="courses.html" class="nav-link">
+                Courses
+            </a>
+
+            <a href="my-courses.html" class="nav-link active">
+                My courses
+            </a>
+
+            <a href="profile.html" class="nav-link">
+                Profile
+            </a>
+
+                    <a href="dashboard.html" class="nav-link">
+                Dashboard
+            </a>
+
+            <a href="learning-paths.html" class="nav-link">
+                Learning paths
+            </a>
+
+</nav>
+
+            <a href="learning-paths.html" class="nav-link">
+                Learning paths
+            </a>
+
+</nav>
+
+        <div class="nav-actions"><button type="button" class="theme-toggle" title="Toggle dark / light theme" aria-label="Toggle dark or light theme"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+
+            <a href="dashboard.html#notifications" class="nav-icon notif-bell" id="notifBell" title="Notifications" hidden>
+                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                <span id="notifCount" class="notif-count" hidden>0</span>
+            </a>
+
+            <a href="dashboard.html#notifications" class="nav-icon notif-bell" id="notifBell" title="Notifications" hidden>
+                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                <span id="notifCount" class="notif-count" hidden>0</span>
+            </a>
+
+            <a href="cart.html" class="nav-icon">
+                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                <span id="cart-count" class="cart-count">
+                    0
+                </span>
+            </a>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<section class="page-header">
+
+    <div class="container">
+
+        <h1>
+            My courses
+        </h1>
+
+        <p>
+            Pick up where you left off.
+        </p>
+
+    </div>
+
+</section>
+
+
+<section class="section">
+
+    <div class="container">
+
+        <div
+            id="myCourseList"
+            class="course-grid"
+        ></div>
+
+    </div>
+
+</section>
+
+
+<script src="script.js"></script>
+<script src="js/api.js"></script>
+
+
+<script>
+
+async function renderMyCourses() {
+    // Backend first: real enrolments with real progress bars.
+    // Any failure (offline, signed out) falls back to the legacy
+    // localStorage rendering below, so the page never breaks.
+    if (window.LearnHubAPI) {
+        try {
+            if (await LearnHubAPI.checkApi()) {
+                var courses = await LearnHubAPI.getMyCourses();
+                var container = document.getElementById("myCourseList");
+                if (courses && courses.length) {
+                    container.innerHTML = courses.map(function (c) {
+                        var pct = c.progress_percent || 0;
+                        return "<div class=\"course-card\"><div class=\"course-content\">" +
+                            "<h3>" + c.title + "</h3>" +
+                            "<p class=\"instructor\">" + c.instructor + "</p><br>" +
+                            "<p id=\"pct-" + c.id + "\">" + pct + "% complete &middot; " + (c.lesson_count || 0) + " lessons</p>" +
+                            "<progress id=\"bar-" + c.id + "\" value=\"" + pct + "\" max=\"100\" style=\"width:100%;\"></progress>" +
+                            "<p id=\"meta-" + c.id + "\"></p><br>" +
+                            "<a class=\"btn btn-primary\" href=\"course-details.html?id=" + c.id + "\">Continue learning</a>" +
+                            " <button class=\"btn btn-outline\" type=\"button\" onclick=\"unenrollCourse(" + c.id + ", this)\">Unenroll</button>" +
+                            "</div></div>";
+                    }).join("");
+                    // Refresh each card from GET /api/courses/:id/progress -
+                    // the authoritative recompute (done/total lessons,
+                    // next lesson, certificate code at 100%).
+                    courses.forEach(function (c) {
+                        LearnHubAPI.getCourseProgress(c.id).then(function (p) {
+                            var pctEl = document.getElementById("pct-" + c.id);
+                            var barEl = document.getElementById("bar-" + c.id);
+                            var metaEl = document.getElementById("meta-" + c.id);
+                            if (!pctEl || !barEl || !metaEl) return;
+                            var pct = p.progress_percent || 0;
+                            pctEl.textContent = pct + "% complete · " + p.completed_lessons + "/" + p.total_lessons + " lessons";
+                            barEl.value = pct;
+                            var meta = "";
+                            if (p.next_lesson_id) {
+                                meta += "Next: <a href=\"lesson.html?id=" + p.next_lesson_id + "\">" + p.next_lesson_title + "</a>";
+                            }
+                            if (p.certificate_code) {
+                                meta += (meta ? " · " : "") + "<a href=\"certificate.html?code=" + encodeURIComponent(p.certificate_code) + "\">Certificate ready</a>";
+                            }
+                            metaEl.innerHTML = meta;
+                        }).catch(function () { /* keep the my-courses figure */ });
+                    });
+                    return;
+                }
+            }
+        } catch (e) { /* fall through to legacy rendering */ }
+    }
+    renderMyCoursesLegacy();
+}
+
+
+// Unenroll from a course (DELETE /api/enrollments/:id). Lesson progress
+// is deleted, so a later re-enrolment starts fresh; an earned
+// certificate is permanent and is kept. The list reloads from the API.
+async function unenrollCourse(courseId, btn) {
+    if (!confirm("Unenroll from this course? Your lesson progress will be deleted (an earned certificate is kept).")) return;
+    if (btn) btn.disabled = true;
+    try {
+        await LearnHubAPI.unenroll(courseId);
+        renderMyCourses();
+    } catch (e) {
+        alert("Could not unenroll: " + (e.message || "please try again"));
+        if (btn) btn.disabled = false;
+    }
+}
+
+function renderMyCoursesLegacy() {
+
+
+    const ids =
+        JSON.parse(
+            localStorage.getItem("myCourses")
+        ) || [];
+
+
+    const container =
+        document.getElementById("myCourseList");
+
+
+    if (ids.length === 0) {
+
+        container.innerHTML = `
+
+            <div class="empty-state">
+
+                <h2>
+                    No courses yet
+                </h2>
+
+                <p>
+                    Purchase a course to start learning.
+                </p>
+
+                <br>
+
+                <a
+                    href="courses.html"
+                    class="btn btn-primary"
+                >
+                    Explore courses
+                </a>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    container.innerHTML =
+        ids.map(id => {
+
+            const course =
+                getCourseById(id);
+
+            return `
+
+                <div class="course-card">
+
+                    <div class="course-image">
+
+                        <img
+                            src="${course.image}"
+                            alt="${course.title}"
+                        >
+
+                    </div>
+
+
+                    <div class="course-content">
+
+                        <h3>
+                            ${course.title}
+                        </h3>
+
+                        <p class="instructor">
+                            ${course.instructor}
+                        </p>
+
+                        <br>
+
+                        <p>
+                            Progress
+                        </p>
+
+                        <progress
+                            value="25"
+                            max="100"
+                            style="width:100%;"
+                        ></progress>
+
+                        <br><br>
+
+                        <button
+                            class="btn btn-primary"
+                            onclick="alert('Course learning page can be added later.')"
+                        >
+                            Continue learning
+                        </button>
+
+                    </div>
+
+                </div>
+
+            `;
+
+        }).join("");
+
+}
+
+
+document.addEventListener(
+    "DOMContentLoaded",
+    renderMyCourses
+);
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="Your LearnHub cart — review your courses and check out to start learning.">
+    <title>Your Cart - LearnHub</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script>(function(){try{document.documentElement.setAttribute("data-theme",localStorage.getItem("lh_theme")||"dark");}catch(e){document.documentElement.setAttribute("data-theme","dark");}})();</script>
+
+</head>
+
+<body>
+
+
+<header class="header">
+
+    <div class="container navbar">
+
+        <a href="index.html" class="logo">
+            Learn<span>Hub</span>
+        </a>
+
+        <nav class="nav-menu">
+
+            <a href="index.html" class="nav-link">
+                Home
+            </a>
+
+            <a href="courses.html" class="nav-link">
+                Courses
+            </a>
+
+            <a href="about.html" class="nav-link">
+                About
+            </a>
+
+            <a href="contact.html" class="nav-link">
+                Contact
+            </a>
+
+            <a href="dashboard.html" class="nav-link">
+                Dashboard
+            </a>
+
+            <a href="learning-paths.html" class="nav-link">
+                Learning Paths
+            </a>
+
+        </nav>
+
+        <div class="nav-actions"><button type="button" class="theme-toggle" title="Toggle dark / light theme" aria-label="Toggle dark or light theme"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+
+            <a href="wishlist.html" class="nav-icon">
+                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </a>
+
+            <a href="cart.html" class="nav-icon">
+
+                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+
+                <span id="cart-count" class="cart-count">
+                    0
+                </span>
+
+            </a>
+
+            <a href="login.html" class="btn btn-outline">
+                Login
+            </a>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<section class="page-header">
+
+    <div class="container">
+
+        <h1>Your Cart</h1>
+
+        <p>
+            Review your courses, then check out to start learning.
+        </p>
+
+    </div>
+
+</section>
+
+
+<section class="section">
+
+    <div class="container">
+
+        <div id="cartList" class="course-grid"></div>
+
+        <div id="cartSummary" class="admin-card" hidden>
+            <h3>Order summary</h3>
+            <p id="cartTotal"></p>
+            <a href="checkout.html" class="btn btn-primary">Proceed to checkout</a>
+            &nbsp;
+            <a href="courses.html" class="btn btn-outline">Continue browsing</a>
+        </div>
+
+    </div>
+
+</section>
+
+
+<footer class="footer">
+
+    <div class="container footer-grid">
+
+        <div class="footer-column">
+
+            <a href="index.html" class="footer-logo">
+                Learn<span>Hub</span>
+            </a>
+
+            <p>
+                Coding courses for B.Tech students — LearnHub by CareerPlus Co-Private Limited.
+            </p>
+
+        </div>
+
+        <div class="footer-column">
+
+            <h3>Quick links</h3>
+
+            <a href="index.html">Home</a>
+            <a href="courses.html">Courses</a>
+            <a href="search.html">Search</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="learning-paths.html">Learning Paths</a>
+            <a href="instructors.html">Instructors</a>
+            <a href="announcements.html">Announcements</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+
+        </div>
+
+        <div class="footer-column">
+
+            <h3>Student</h3>
+
+            <a href="login.html">Login</a>
+            <a href="register.html">Register</a>
+            <a href="my-courses.html">My courses</a>
+            <a href="help.html">Help</a>
+            <a href="faq.html">FAQ</a>
+            <a href="terms.html">Terms</a>
+            <a href="privacy-policy.html">Privacy Policy</a>
+
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+
+        <div class="container">
+
+            <p>
+                © 2026 LearnHub by CareerPlus Co-Private Limited. All Rights Reserved.
+            </p>
+
+        </div>
+
+    </div>
+
+</footer>
+
+
+<script src="script.js"></script>
+<script src="js/api.js"></script>
+
+<script>
+/* Real cart: GET /api/cart (signed in only). The old page showed a
+   single course's details instead of the cart, so nothing could be
+   reviewed, removed or checked out from here. */
+(function () {
+    "use strict";
+
+    function esc(s) {
+        return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+            return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+        });
+    }
+
+    function emptyHtml(title, body, cta) {
+        return '<div class="empty-state"><h2>' + title + '</h2><p>' + body + '</p><br>' + (cta || "") + '</div>';
+    }
+
+    async function renderCart() {
+        var list = document.getElementById("cartList");
+        var summary = document.getElementById("cartSummary");
+        summary.hidden = true;
+        if (!localStorage.getItem("lh_token")) {
+            list.innerHTML = emptyHtml("Sign in to see your cart",
+                "Your cart lives on your account — sign in and your saved courses will be here.",
+                '<a href="login.html" class="btn btn-primary">Sign in</a>');
+            return;
+        }
+        list.innerHTML = "<p>Loading your cart…</p>";
+        var items;
+        try {
+            items = await LearnHubAPI.getCart();
+        } catch (e) {
+            list.innerHTML = emptyHtml("Could not load your cart", esc(e.message || "Please try again later."), "");
+            return;
+        }
+        if (!items.length) {
+            list.innerHTML = emptyHtml("Your cart is empty",
+                "Add a course and it will show up here.",
+                '<a href="courses.html" class="btn btn-primary">Browse Courses</a>');
+            return;
+        }
+        var total = 0;
+        list.innerHTML = items.map(function (it) {
+            var c = it.course || {};
+            total += Number(c.price) || 0;
+            return '<div class="course-card"><div class="course-content">' +
+                "<h3>" + esc(c.title) + "</h3>" +
+                '<p class="instructor">By ' + esc(c.instructor || "LearnHub") + "</p>" +
+                '<p class="course-price">' + esc(formatPrice(c.price)) + "</p>" +
+                '<p><a href="course-details.html?id=' + c.id + '" class="btn btn-outline btn-small">View Course</a> ' +
+                '<button type="button" class="btn btn-outline btn-small" data-remove="' + c.id + '">Remove</button></p>' +
+                "</div></div>";
+        }).join("");
+        document.getElementById("cartTotal").textContent =
+            items.length + (items.length === 1 ? " course" : " courses") + " — Total: " + formatPrice(total);
+        summary.hidden = false;
+        list.querySelectorAll("[data-remove]").forEach(function (btn) {
+            btn.addEventListener("click", async function () {
+                btn.disabled = true;
+                await removeFromCart(Number(btn.dataset.remove));
+            });
+        });
+        updateCartCount();
+    }
+
+    window.renderCart = renderCart;
+    document.addEventListener("DOMContentLoaded", renderCart);
+})();
+</script>
+
+</body>
+</html>
